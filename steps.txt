@@ -3,8 +3,8 @@ Creation of Todo with Vue as front and Django as Back using RESTAPI
 Steps:
 -- DONE Start Django Project and App (Settings, database, urls and home view)
 -- DONE Start Vue for Front (Includes clean up of front page)
--- Django - Create User and Profiles (Signals to create Profiles upon User creation)
--- Django - Create Todo Model which ties User with their todos
+-- DONE Django - Create User and Profiles (Signals to create Profiles upon User creation)
+-- DONE Django - Create Todo Model which ties User with their todos
 -- Django - Create RESTAPI and explore APIVIEW
 -- Postman - Test API call
 -- Vue - Call that api using axios and make a front page

@@ -21,6 +21,8 @@ from todo import settings
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('todo_app.urls')),
+    path('', include('users.urls')),
+    path('', include('django.contrib.auth.urls')),
 ]
 
 if settings.DEBUG:
