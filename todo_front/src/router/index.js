@@ -1,12 +1,19 @@
 import { createRouter, createWebHistory } from "vue-router";
-import HomePage from "../views/HomePage.vue";
+import Home from "../views/Home.vue";
+import ViewTodos from "../views/ViewTodos";
 
 const routes = [
   {
     path: "/",
-    name: "HomePage",
-    component: HomePage,
+    name: "Home",
+    component: Home,
   },
+  {
+    // Route path should start with / and end with /
+    path: '/view_todos/',
+    name: 'ViewTodo',
+    component: ViewTodos,
+  }
   // {
   //   path: "/about",
   //   name: "About",

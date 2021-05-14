@@ -1,11 +1,18 @@
 <template>
-  <div id="nav">
-  </div>
+  <NavBar></NavBar>
   <router-view />
 </template>
 
-<style>
+<script>
+import NavBar from "./components/NavBar";
 
+export default {
+  components: {
+    NavBar,
+  },
+};
+</script>
+<style>
 #nav {
   padding: 30px;
 }

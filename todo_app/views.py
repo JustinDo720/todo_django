@@ -24,7 +24,7 @@ class ShowTodos(generics.RetrieveAPIView):
     """
 
     # Lets make our main query set so
-    queryset = Todo.objects.all()
+    queryset = Todo.objects.order_by('-date_added')
 
     # Something to note: APIView always has some common methods like get or post etc
     def get(self, request, *args, **kwargs):

@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'users',
     'djoser',
     'rest_framework',
+    'corsheaders',
 
 
     'django.contrib.admin',
@@ -50,6 +51,7 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -179,3 +181,5 @@ if DEBUG:
 #     'JWT_EXPIRATION_DELTA': timedelta(minutes=2),
 #     'JWT_REFRESH_EXPIRATION_DELTA': timedelta(days=7),
 # }
+
+CORS_ORIGIN_ALLOW_ALL = True
