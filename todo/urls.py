@@ -23,7 +23,10 @@ urlpatterns = [
     path('', include('todo_app.urls')),
     path('', include('users.urls')),
     path('', include('django.contrib.auth.urls')),
+    path('api/v1/auth/', include('djoser.urls')),
+    path('api/v1/auth/', include('djoser.urls.jwt')),
 ]
 
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+    urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

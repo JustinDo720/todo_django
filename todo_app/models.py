@@ -36,7 +36,7 @@ class Todo(models.Model):
     task_owner = models.ForeignKey(User, on_delete=models.CASCADE, default=None, null=True)
     task = models.CharField(max_length=600)
     task_completed = models.BooleanField(default=False)
-    date_added = models.DateTimeField(auto_now_add=True)
+    date_added = models.DateField(auto_now_add=True)
 
     def __str__(self):
         return self.task
