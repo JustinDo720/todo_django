@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'djoser',
     'rest_framework',
     'corsheaders',
+    'rest_framework_simplejwt.token_blacklist',
 
 
     'django.contrib.admin',
@@ -153,16 +154,15 @@ if DEBUG:
     )
 
 # REST Framework configuration
-# REST_FRAMEWORK = {
-#     'DEFAULT_PERMISSION_CLASSES': [
-#         'rest_framework.permissions.IsAuthenticated'
-#     ],
-#     'DEFAULT_AUTHENTICATION_CLASSES' : (
-#         'rest_framework_simplejwt.authentication.JWTAuthentication',
-#         'rest_framework.authentication.SessionAuthentication',
-#     ),
-#     'DEFAULT_RENDERER_CLASSES':DEFAULT_RENDERER_CLASSES
-# }
+REST_FRAMEWORK = {
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.IsAuthenticated'
+    ],
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    ),
+    'DEFAULT_RENDERER_CLASSES': DEFAULT_RENDERER_CLASSES
+}
 
 # DJOSER AND SIMPLE_JWT
 

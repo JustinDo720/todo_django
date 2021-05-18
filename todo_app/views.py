@@ -7,6 +7,7 @@ from rest_framework.response import Response
 from .models import Todo
 from .serializers import TodoSerializer
 from rest_framework.decorators import api_view
+from rest_framework.permissions import IsAuthenticated
 
 # Error Handler
 from django.http import HttpResponse
@@ -27,6 +28,8 @@ class Todos(APIView):
         authentication_classes = [authentication.TokenAuthentication]
         permission_classes = [permissions.IsAdminUser]
     """
+
+    permission_classes = (IsAuthenticated,)
 
     # Something to note: APIView always has some common methods like get or post etc
     def get(self, request, *args, **kwargs):
