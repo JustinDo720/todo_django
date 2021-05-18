@@ -12,7 +12,7 @@ Steps:
 -- CANCELED Vue - Introduce Bootstrap Vue NOTE: Bootstrap-Vue doesn't support Vue3
 -- DONE NEW Vue - Introduce Bulma ;)
 -- DONE Users can Edit, Move to finish tasks, Delete, View and Post todos
--- Vue - Edit tasks, Delete, View and Post todos
+-- DONE Vue - Edit tasks, Delete, View and Post todos
 -- Django and Vue Authentication? JWT? todos specific for each users
 -- Vue & Django routers
 -- Deploy - Checkout DigitalOcean, Since we are using Vue as our main go we could Netlify
