@@ -23,11 +23,23 @@
       </a>
     </div>
 
-    <div id="navbarBasicExample" class="navbar-menu" v-bind:class="{'is-active': showMobileMenu}">
+    <div
+      id="navbarBasicExample"
+      class="navbar-menu"
+      v-bind:class="{ 'is-active': showMobileMenu }"
+    >
       <div class="navbar-start">
-        <a class="navbar-item"> <router-link to="/" class="navbar-item">Home</router-link> </a>
+        <a class="navbar-item">
+          <router-link :to="{ name: 'Home' }" class="navbar-item"
+            >Home</router-link
+          >
+        </a>
 
-        <a class="navbar-item"> <router-link to="/view_todos/" class="navbar-item">View Todos</router-link> </a>
+        <a class="navbar-item">
+          <router-link :to="{ name: 'ViewTodo' }" class="navbar-item"
+            >View Todos</router-link
+          >
+        </a>
 
         <div class="navbar-item has-dropdown is-hoverable">
           <a class="navbar-link"> More </a>
@@ -52,7 +64,9 @@
             <a class="button is-primary">
               <strong>Sign up</strong>
             </a>
-            <a class="button is-light"> Log in </a>
+            <a class="button is-light">
+              <router-link :to="{ name: 'Login' }"> Login </router-link>
+            </a>
           </div>
         </div>
       </div>

@@ -1,6 +1,7 @@
 import { createRouter, createWebHistory } from "vue-router";
 import Home from "../views/Home.vue";
 import ViewTodos from "../views/ViewTodos";
+import Login from "../views/Login";
 
 const routes = [
   {
@@ -10,10 +11,15 @@ const routes = [
   },
   {
     // Route path should start with / and end with /
-    path: '/view_todos/',
-    name: 'ViewTodo',
+    path: "/view_todos/",
+    name: "ViewTodo",
     component: ViewTodos,
-  }
+  },
+  {
+    path: "/login/",
+    name: "Login",
+    component: Login,
+  },
   // {
   //   path: "/about",
   //   name: "About",
