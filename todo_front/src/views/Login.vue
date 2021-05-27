@@ -61,7 +61,6 @@ export default {
         })
         .then(() => {
           console.log(this.returnToken, this.$store.state.accessToken)
-          this.$router.push({name:'ViewTodo'})
         })
         .catch(err => {
           console.log(err)

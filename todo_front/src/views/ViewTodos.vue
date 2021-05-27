@@ -63,7 +63,7 @@ export default{
     },
   },
   created(){
-    this.callAPI()
+    // this.callAPI()
   }
 }
 </script>

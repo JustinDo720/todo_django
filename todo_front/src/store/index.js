@@ -31,19 +31,23 @@ const store = createStore({
       }
     },
     userLogin (context, usercredentials) {
-      return new Promise((resolve, reject) => {
-        axios.post(store.state.sjwt_url, {
-          username: usercredentials.username,
-          password: usercredentials.password
-        })
-          .then(response => {
-            context.commit('updateStorage', { access: response.data.access, refresh: response.data.refresh })
-            resolve()
-          })
-          .catch(err => {
-            reject(err)
-          })
-      })
+        /*
+        * Here we ABSOLUTELY need to return a new promise or else the state on the main page wouldn't update
+        * We need to return to use then() after dispatching our action on our components
+        * This would allow us to log out our access tokens
+        * */
+        return new Promise((resolve, reject)=>{
+            axios.post(store.state.sjwt_url, {
+              username: usercredentials.username,
+              password: usercredentials.password
+            })
+              .then(response => {
+                  context.commit('updateStorage', { access: response.data.access, refresh: response.data.refresh })
+                  resolve()
+              }).catch(err =>{
+                reject(err)
+                })
+            })
     }
   }
 })
