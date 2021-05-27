@@ -2,6 +2,8 @@ import { createRouter, createWebHistory } from "vue-router";
 import Home from "../views/Home.vue";
 import ViewTodos from "../views/ViewTodos";
 import Login from "../views/Login";
+import Logout from "../views/Logout";
+import store from "../store";
 
 const routes = [
   {
@@ -14,11 +16,19 @@ const routes = [
     path: "/view_todos/",
     name: "ViewTodo",
     component: ViewTodos,
+    meta:{
+      requiresLogin: true
+    },
   },
   {
     path: "/login/",
     name: "Login",
     component: Login,
+  },
+  {
+    path: "/logout/",
+    name: "Logout",
+    component: Logout,
   },
   // {
   //   path: "/about",
@@ -35,5 +45,20 @@ const router = createRouter({
   history: createWebHistory(process.env.BASE_URL),
   routes,
 });
+
+
+// router guards
+router.beforeEach((to, from, next) =>{
+  if(to.matched.some(record => record.meta.requiresLogin)){
+    if(!store.getters.loggedIn){
+      next({name:'Login'})
+    }else{
+      next()
+    }
+  }else{
+    // This means that the router doesnt have the meta tag 'requiresLogin' which means they are free to pass
+    next()
+  }
+})
 
 export default router;

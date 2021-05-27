@@ -13,6 +13,6 @@ Steps:
 -- DONE NEW Vue - Introduce Bulma ;)
 -- DONE Users can Edit, Move to finish tasks, Delete, View and Post todos
 -- DONE Vue - Edit tasks, Delete, View and Post todos
--- Django and Vue Authentication? JWT? todos specific for each users
--- Vue & Django routers
+-- DONE 1/2 Django and Vue Authentication? JWT? todos specific for each users
+-- DONE 1/2 Vue & Django routers
 -- Deploy - Checkout DigitalOcean, Since we are using Vue as our main go we could Netlify

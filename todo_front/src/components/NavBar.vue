@@ -60,12 +60,18 @@
 
       <div class="navbar-end">
         <div class="navbar-item">
-          <div class="buttons">
+          <div class="buttons" v-if="!isLoggedIn">
             <a class="button is-primary">
               <strong>Sign up</strong>
             </a>
             <a class="button is-light">
               <router-link :to="{ name: 'Login' }"> Login </router-link>
+            </a>
+          </div>
+           <div class="buttons" v-else>
+            <strong>Welcome {{ userName }}!</strong>
+            <a class="button is-light">
+              <router-link :to="{ name: 'Logout' }"> Logout </router-link>
             </a>
           </div>
         </div>
@@ -74,6 +80,7 @@
   </nav>
 </template>
 <script>
+
 export default {
   data() {
     return {
@@ -81,5 +88,14 @@ export default {
       showMobileMenu: false,
     };
   },
+  computed:{
+    isLoggedIn(){
+      return this.$store.getters.loggedIn
+    },
+    userName(){
+      return this.$store.state.username
+    }
+  }
+
 };
 </script>
