@@ -49,7 +49,7 @@
 </template>
 
 <script>
-import { mapActions } from 'vuex'
+import Cookies from 'cookies-js'
 
 export default {
   name: "login",
@@ -61,28 +61,27 @@ export default {
     };
   },
   methods: {
-    ...mapActions(['userLogin']),
-    async login() {
+      login() {
         // We could use mapActions to dispatch UserLogin actions without using the code below
         // We need to however make the function async because we need to await for our dispatch
-          // this.$store
-          //   .dispatch("userLogin", {
-          //     username: this.username,
-          //     password: this.password,
-          //   })
-          //   .then(() => {
-          //     console.log(this.returnToken, this.$store.state.accessToken);
-          //     this.$router.push({ name: "ViewTodo" });
-          //   })
-          //   .catch((err) => {
-          //     console.log(err);
-          //     this.incorrectAuth = true;
-          //   });
-        await this.userLogin({
-            username: this.username,
-            password: this.password,
-          })
-        await this.$router.push({name: 'ViewTodo'})
+          this.$store
+            .dispatch("userLogin", {
+              username: this.username,
+              password: this.password,
+            })
+            .then(() => {
+              // we are going to set our cookies now since they are logged in which means they will have the tokens
+              Cookies.set('accessToken', this.$store.state.accessToken)
+              Cookies.set('refreshToken', this.$store.state.refreshToken)
+              Cookies.set('isLoggedIn', true)
+              Cookies.set('username', this.username)
+
+              this.$router.push({ name: "ViewTodo" });
+            })
+            .catch((err) => {
+              console.log(err);
+              this.incorrectAuth = true;
+            });
     },
   },
 };

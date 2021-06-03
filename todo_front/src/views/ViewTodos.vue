@@ -62,7 +62,6 @@
 
 <script>
 import axios from "axios";
-import {mapState} from 'vuex'
 
 export default {
   data() {
@@ -77,31 +76,12 @@ export default {
       task_object : {'task_id': null, 'task_info': ''},
     };
   },
-  computed:{
-    ...mapState(['accessToken',])
-  },
-  watch:{
-    // We are going to look at task and completed task
-    task(newTasks){
-      // Once we great our new tasks we could set localstorage
-      localStorage.tasks = newTasks
-      console.log(newTasks, localStorage.tasks)
-    },
-    completed_tasks(newCompletedTasks){
-      localStorage.completed_tasks = newCompletedTasks
-      console.log(newCompletedTasks, localStorage.completed_tasks)
-    }
-  },
-  mounted(){
-    if(localStorage.tasks){
-      this.tasks = localStorage.tasks
-    }
-  },
   methods: {
-    callAPI: function () {
+    callAPI() {
+      console.log('current accessToken in view todos ' + this.$store.state.accessToken)
       axios
         .get(this.api_url, {
-          headers: { Authorization: `Bearer ${this.accessToken}` },
+          headers: { Authorization: `Bearer ${this.$store.state.accessToken}` },
         })
         .then((response) => {
           for (let task_id in response.data) {
@@ -112,8 +92,10 @@ export default {
               this.tasks.push(task);
             }
           }
-        }).catch(err =>{
-          console.log(err)
+        }).catch(() =>{
+          // If there is an error then that must mean the token is invalid so we need to get another token
+
+
       });
     },
     updateTask: function(task_id, status) {
