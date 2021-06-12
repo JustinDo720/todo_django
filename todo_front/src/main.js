@@ -14,5 +14,3 @@ Cookies.defaults = {
     expires : 86400,
     path: '/',
 }
-// We want to reinitialize vuex using localstorages and/or cookies
-store.dispatch('reinitializeStore')

@@ -62,6 +62,8 @@
 
 <script>
 import axios from "axios";
+import store from "../store";
+import { mapState } from 'vuex';
 
 export default {
   data() {
@@ -76,12 +78,14 @@ export default {
       task_object : {'task_id': null, 'task_info': ''},
     };
   },
+  computed:{
+    ...mapState(['accessToken'])
+  },
   methods: {
     callAPI() {
-      console.log('current accessToken in view todos ' + this.$store.state.accessToken)
       axios
         .get(this.api_url, {
-          headers: { Authorization: `Bearer ${this.$store.state.accessToken}` },
+          headers: { Authorization: `Bearer ${this.accessToken}` },
         })
         .then((response) => {
           for (let task_id in response.data) {
@@ -123,10 +127,11 @@ export default {
       }
     },
   },
-  created() {
-    this.callAPI();
-
-  },
+  beforeCreate(){
+    store.dispatch('reinitializeStore').then(()=>{
+      this.callAPI()
+    })
+  }
 };
 </script>
 

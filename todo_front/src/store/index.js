@@ -36,18 +36,23 @@ const store = createStore({
     },
     destroyToken(state) {
       state.accessToken = null;
+      Cookies.expire('accessToken')
       state.refreshToken = null;
+      Cookies.expire('refreshToken')
+      state.isLoggedIn = false
+       Cookies.expire('isLoggedIn')
     },
     updateAccessToken(state, {newAccessToken}){
-      console.log('Our new access token: ' + newAccessToken)
       state.accessToken = newAccessToken
+      // if we set a cookie then it overrides the current "possible" cookie giving us an up-to-date accessToken
+      Cookies.set('accessToken', newAccessToken)
       console.log('Our new state access token: ' + state.accessToken)
     }
   },
   // getters are like our computed properties
   getters: {
-    loggedIn(state) {
-      return state.isLoggedIn;
+    loggedIn() {
+      return true;
     },
   },
   // actions are just async methods
@@ -86,6 +91,7 @@ const store = createStore({
         }).then(response =>{
           // You have to stop doing context.commit('updateAccessToken', response.data.access) it's undef
           context.commit('updateAccessToken', {newAccessToken:response.data.access})
+
          resolve();
         })
         .catch((err) =>{
@@ -95,26 +101,31 @@ const store = createStore({
       })
 
     },
+     // reinitalizeStore will be used to set any data besides tokens
     reinitializeStore(context){
-      // Before we commit our cookies lets run a check on our access token and make sure its working
-      axios.post(context.state.sjwt_verify_url, {token:context.state.accessToken}).then(()=>{
-        console.log('We are good')
-      }).catch(()=>{
-        // if we were to get the error that means the token has expired so lets use our refresh token to obtain a new one
-        context.dispatch('updateAccessToken', {refreshToken:context.state.refreshToken}).then(()=>{
-          // if we set a cookie then it overrides the current "possible" cookie giving us an up-to-date accessToken
-          Cookies.set('accessToken', context.state.accessToken)
-        })
-      })
-      // Lets check up our cookies to set back our states
+      return new Promise((resolve)=>{
+         // Here are our initial values to use
       let access = Cookies.get('accessToken')
       let refresh = Cookies.get('refreshToken')
       let loggedIn = Cookies.get('isLoggedIn')
       let username = Cookies.get('username')
-      // make sure the names of the payload are the same as mutations
-      context.commit('updateStorage', { username, access, refresh, loggedIn })
 
-    }
+      // We are going to post our access token to a verify url
+      axios.post(context.state.sjwt_verify_url, {token:access}).then(()=>{
+        // If status is 200 then we are just going commit our update storage mutations with the initial values
+        context.commit('updateStorage', {loggedIn, username, access, refresh})
+        resolve()
+      }).catch(()=>{
+
+        // if we were to get the error that means the token has expired so lets use our refresh token to obtain a new one
+        context.dispatch('updateAccessToken', {refreshToken:refresh}).then(()=>{
+          // Once the dispatch is completed then we have an updated accessToken cookie in which we set for access
+          context.commit('updateStorage', {loggedIn, username, access: Cookies.get('accessToken') , refresh})
+          resolve()
+        })
+      })
+      })
+    },
   },
 });
 

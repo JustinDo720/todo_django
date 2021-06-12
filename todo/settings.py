@@ -176,11 +176,10 @@ REST_FRAMEWORK = {
 #     'PASSWORD_RESET_CONFIRM_URL': 'auth/password/reset/{uid}/{token}',
 # }
 #
-# SIMPLE_JWT = {
-#     'JWT_ALLOW_REFRESH': True,
-#     'JWT_EXPIRATION_DELTA': timedelta(minutes=2),
-#     'JWT_REFRESH_EXPIRATION_DELTA': timedelta(days=7),
-# }
+SIMPLE_JWT = {
+    'JWT_ALLOW_REFRESH': True,
+    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=1),
+}
 
 CORS_ORIGIN_ALLOW_ALL = True
 
