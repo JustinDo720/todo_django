@@ -46,9 +46,10 @@ const router = createRouter({
   routes,
 });
 
-
-// router guards
+store.dispatch('reinitializeStore').then(()=>{
+      // router guards
 router.beforeEach((to, from, next) =>{
+  console.log('router log in info after: ' + !store.getters.loggedIn)
   if(to.matched.some(record => record.meta.requiresLogin)){
     if(!store.getters.loggedIn){
       next({name:'Login'})
@@ -60,5 +61,8 @@ router.beforeEach((to, from, next) =>{
     next()
   }
 })
+    })
+
+
 
 export default router;

@@ -73,7 +73,6 @@ export default {
               // we are going to set our cookies now since they are logged in which means they will have the tokens
               Cookies.set('accessToken', this.$store.state.accessToken)
               Cookies.set('refreshToken', this.$store.state.refreshToken)
-              Cookies.set('isLoggedIn', true)
               Cookies.set('username', this.username)
 
               this.$router.push({ name: "ViewTodo" });

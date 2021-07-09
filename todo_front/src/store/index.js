@@ -9,29 +9,23 @@ const store = createStore({
     username: null,
     accessToken: null,
     refreshToken: null,
-    isLoggedIn: false,
     sjwt_url: "http://127.0.0.1:8000/api/token/",
     sjwt_refresh_url: "http://127.0.0.1:8000/api/token/refresh/",
     sjwt_verify_url: 'http://127.0.0.1:8000/api/token/verify/',
   },
   // mutations are like our sync methods
   mutations: {
-    updateStorage(state, { username, access, refresh, loggedIn }) {
+    updateStorage(state, { username, access, refresh}) {
       state.username = username
       state.accessToken = access;
       state.refreshToken = refresh;
-      if(loggedIn){
-        state.isLoggedIn = loggedIn
-      }
       console.log(`
       original username: ${username}
       username : ${state.username},
       original access token: ${access},
       access token: ${state.accessToken},
       original refresh token: ${refresh},
-      refresh token: ${state.refreshToken},
-      original logged in: ${loggedIn},
-      logged in: ${state.isLoggedIn},
+      refresh token: ${state.refreshToken}
       `)
     },
     destroyToken(state) {
@@ -39,8 +33,6 @@ const store = createStore({
       Cookies.expire('accessToken')
       state.refreshToken = null;
       Cookies.expire('refreshToken')
-      state.isLoggedIn = false
-       Cookies.expire('isLoggedIn')
     },
     updateAccessToken(state, {newAccessToken}){
       state.accessToken = newAccessToken
@@ -51,8 +43,8 @@ const store = createStore({
   },
   // getters are like our computed properties
   getters: {
-    loggedIn() {
-      return true;
+    loggedIn(state) {
+      return state.accessToken != null;
     },
   },
   // actions are just async methods
@@ -75,7 +67,6 @@ const store = createStore({
               username: usercredentials.username,
               access: response.data.access,
               refresh: response.data.refresh,
-              loggedIn: true
             });
             resolve();
           })
@@ -107,20 +98,19 @@ const store = createStore({
          // Here are our initial values to use
       let access = Cookies.get('accessToken')
       let refresh = Cookies.get('refreshToken')
-      let loggedIn = Cookies.get('isLoggedIn')
       let username = Cookies.get('username')
 
       // We are going to post our access token to a verify url
       axios.post(context.state.sjwt_verify_url, {token:access}).then(()=>{
         // If status is 200 then we are just going commit our update storage mutations with the initial values
-        context.commit('updateStorage', {loggedIn, username, access, refresh})
+        context.commit('updateStorage', {username, access, refresh})
         resolve()
       }).catch(()=>{
 
         // if we were to get the error that means the token has expired so lets use our refresh token to obtain a new one
         context.dispatch('updateAccessToken', {refreshToken:refresh}).then(()=>{
           // Once the dispatch is completed then we have an updated accessToken cookie in which we set for access
-          context.commit('updateStorage', {loggedIn, username, access: Cookies.get('accessToken') , refresh})
+          context.commit('updateStorage', {username, access: Cookies.get('accessToken') , refresh})
           resolve()
         })
       })
