@@ -63,6 +63,7 @@ const store = createStore({
             password: usercredentials.password,
           })
           .then((response) => {
+            console.log(response.data.id)
             context.commit("updateStorage", {
               username: usercredentials.username,
               access: response.data.access,

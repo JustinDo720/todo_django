@@ -11,6 +11,6 @@ webController.use(store).use(router).mount("#app");
 
 Cookies.defaults = {
     // Expires is in seconds and path just tells us that the cookies will be available everywhere
-    expires : 86400,
+    expires : 604800, // 7 days | 86400seconds a day
     path: '/',
 }

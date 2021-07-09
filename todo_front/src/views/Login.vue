@@ -23,7 +23,7 @@
             <div class="control has-icons-left has-icons-right">
               <input
                 class="input is-success"
-                type="text"
+                type="password"
                 placeholder="Password"
                 v-model="password"
               />

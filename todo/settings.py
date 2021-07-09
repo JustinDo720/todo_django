@@ -178,7 +178,8 @@ REST_FRAMEWORK = {
 #
 SIMPLE_JWT = {
     'JWT_ALLOW_REFRESH': True,
-    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=1),
+    'ACCESS_TOKEN_LIFETIME': timedelta(days=7),
+    'USER_ID_FIELD': 'id'
 }
 
 CORS_ORIGIN_ALLOW_ALL = True

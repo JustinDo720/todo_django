@@ -1,5 +1,22 @@
 <template>
   <div class="container todoSizing mt-5">
+    <!-- For posting a todo -->
+    <div class="card">
+      <div class="card-content">
+        <div class="content">
+          <input class="input is-medium is-focused is-success" type="text"
+                 placeholder="Add Todo Item" v-model="newTask" @keydown.enter="addTask()">
+        </div>
+      </div>
+       <footer>
+        <div class="buttons is-centered">
+          <button class="button is-success is-medium"
+                   @click="addTask()">
+            Add Todo
+           </button>
+        </div>
+      </footer>
+    </div>
     <div class="card mt-5" v-for="(task, index) in tasks" :key="index">
       <header class="card-header">
           <p class="card-header-title">
@@ -76,6 +93,7 @@ export default {
       activate_modal: false,
       // We must set default values or there will be an error about null values
       task_object : {'task_id': null, 'task_info': ''},
+      newTask: '',
     };
   },
   computed:{
@@ -126,6 +144,13 @@ export default {
             this.tasks.splice(task_id, 1)
       }
     },
+    addTask: function(){
+      // We want to post our new task to the api url which accepts the post request
+      // axios.post(this.api_url, {task:this.newTask, task_owner:1}, {headers:{Authorization: `Bearer ${this.accessToken}`}})
+      // this.tasks.push(this.newTask)
+      console.log(this.newTask)
+
+    }
   },
   beforeCreate(){
     store.dispatch('reinitializeStore').then(()=>{

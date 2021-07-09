@@ -26,3 +26,19 @@ Additional Notes: We need to be careful with the flow. It's not like python, I r
     context.commit('updateAccessToken', {newAccessToken:response.data.access}) I would put context.commit('updateAccessToken', response.data.access).
     This is problematic because it would not know which data to set that value for causing some nulls to be return.
     Also, make sure the name of the var is the same as the parameters set for mutations.
+
+2) Problem Topic: Login guard failure
+
+Problem explained: Each time we login and refresh the page, the user still has to log back in. Although the user could
+    just click View Todos link to bypass the login prompt, it's inconvenient. Before the change, we used cookies to
+    authenticate logins which is not a good solution because someone could easily inject a cookie if they knew the key.
+
+Solution Explained: I noticed that there were issues with reinitializeStorage where the router is built and then
+    reinitializeStorage is dispatched. So the solution was to dispatch reinitializeStorage and then build out our guard.
+    This way our loggedIn getters will have a correct value. If LoggedIn getters has the correct value, then our guard
+    will work and make a fluid experience when a user refreshes the page. This also means our navbar welcome message
+    is also fixed.
+
+Additional Notes: Router is built before main which is why we needed to dispatch our reinitializeStorage  in router.
+    This will fix our issue with the login prompt by updating the getters to the correct value which is dependent on
+    accessToken not being null in our storage.
