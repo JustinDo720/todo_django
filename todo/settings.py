@@ -155,9 +155,9 @@ if DEBUG:
 
 # REST Framework configuration
 REST_FRAMEWORK = {
-    'DEFAULT_PERMISSION_CLASSES': [
-        'rest_framework.permissions.IsAuthenticated'
-    ],
+    # 'DEFAULT_PERMISSION_CLASSES': [
+    #     'rest_framework.permissions.IsAuthenticated'
+    # ],
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_simplejwt.authentication.JWTAuthentication',
     ),
@@ -179,7 +179,10 @@ REST_FRAMEWORK = {
 SIMPLE_JWT = {
     'JWT_ALLOW_REFRESH': True,
     'ACCESS_TOKEN_LIFETIME': timedelta(days=7),
-    'USER_ID_FIELD': 'id'
+    'USER_ID_FIELD': 'id',
+    'USER_ID_CLAIM': 'user_id',
+    'USER_AUTHENTICATION_RULE': 'rest_framework_simplejwt.authentication.default_user_authentication_rule',
+
 }
 
 CORS_ORIGIN_ALLOW_ALL = True

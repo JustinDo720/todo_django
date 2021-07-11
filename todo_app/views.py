@@ -5,9 +5,10 @@ from rest_framework.views import APIView
 from rest_framework import generics
 from rest_framework.response import Response
 from .models import Todo
-from .serializers import TodoSerializer
+from .serializers import TodoSerializer, RegisterSerializer, UserSerializer, MyTokenObtainPairSerializer
 from rest_framework.decorators import api_view
 from rest_framework.permissions import IsAuthenticated
+from rest_framework_simplejwt.views import TokenObtainPairView
 
 # Error Handler
 from django.http import HttpResponse
@@ -79,6 +80,8 @@ class SpecificTodo(APIView):
         3) Set the Task to Complete which is transferred to another list handled in our front-end
     """
 
+    permission_classes = (IsAuthenticated,)
+
     def get_object(self, todo_id):
         try:
             return Todo.objects.get(id=todo_id)
@@ -117,3 +120,25 @@ class SpecificTodo(APIView):
             return Response(serializer.data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+
+class RegisterAPI(generics.GenericAPIView):
+    """
+        We are going to user RegisterAPI to allow users to register on our vue front end. We are going to be sending
+        a post request to register with the username and password credentials
+    """
+    serializer_class = RegisterSerializer
+
+    def post(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        user = serializer.save()
+        print(self.get_serializer_context())
+        return Response({
+            "user": UserSerializer(user, context=self.get_serializer_context()).data,
+            "message": "User has been created"
+        })
+
+
+# Here is where we are going to build out our view which allows us to use this instead of TokenObtainPairView in urls
+class MyTokenObtainPairView(TokenObtainPairView):
+    serializer_class = MyTokenObtainPairSerializer

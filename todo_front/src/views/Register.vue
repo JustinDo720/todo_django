@@ -2,7 +2,7 @@
   <div class="card">
     <div class="card-content">
       <div class="content">
-        <form @submit.prevent="login">
+        <form @submit.prevent="register">
           <div class="field">
             <label class="label">Username</label>
             <div class="control has-icons-left has-icons-right">
@@ -37,7 +37,7 @@
             <div class="field is-grouped">
               <div class="control">
                 <button type="submit" class="button is-success is-light">
-                  Log In
+                  Register Now
                 </button>
               </div>
             </div>
@@ -49,38 +49,36 @@
 </template>
 
 <script>
-import Cookies from 'cookies-js'
 
 export default {
-  name: "login",
+  name: "register",
   data() {
     return {
       username: "",
       password: "",
-      incorrectAuth: false,
     };
   },
   methods: {
-      login() {
+      register() {
         // We could use mapActions to dispatch UserLogin actions without using the code below
         // We need to however make the function async because we need to await for our dispatch
           this.$store
-            .dispatch("userLogin", {
+            .dispatch("userRegister", {
               username: this.username,
               password: this.password,
             })
             .then(() => {
-              // we are going to set our cookies now since they are logged in which means they will have the tokens
-              Cookies.set('accessToken', this.$store.state.accessToken)
-              Cookies.set('refreshToken', this.$store.state.refreshToken)
-              Cookies.set('username', this.username)
-              Cookies.set('user_id', this.$store.state.user_id)
+              // If this is successful then we are going to log them in
+              this.$store.dispatch("userLogin",{
+                username: this.username,
+                password: this.password,
+              }).then(()=>{
+               this.$router.push({name:'Home'})
+              })
 
-              this.$router.push({ name: "ViewTodo" });
             })
             .catch((err) => {
               console.log(err);
-              this.incorrectAuth = true;
             });
     },
   },

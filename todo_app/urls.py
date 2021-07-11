@@ -5,5 +5,6 @@ urlpatterns = [
     path('api/', include('rest_framework.urls')),
     path('', views.index, name='index'),
     path('todos/', views.Todos.as_view(), name='todos'),
-    path('specific_todo/<int:todo_id>', views.SpecificTodo.as_view(), name='remove_task')
+    path('specific_todo/<int:todo_id>', views.SpecificTodo.as_view(), name='remove_task'),
+    path('register/', views.RegisterAPI.as_view(), name='register')
 ]

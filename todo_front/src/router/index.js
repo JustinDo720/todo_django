@@ -3,6 +3,7 @@ import Home from "../views/Home.vue";
 import ViewTodos from "../views/ViewTodos";
 import Login from "../views/Login";
 import Logout from "../views/Logout";
+import Register from "../views/Register";
 import store from "../store";
 
 const routes = [
@@ -24,6 +25,11 @@ const routes = [
     path: "/login/",
     name: "Login",
     component: Login,
+  },
+  {
+    path: "/register/",
+    name: "Register",
+    component: Register
   },
   {
     path: "/logout/",

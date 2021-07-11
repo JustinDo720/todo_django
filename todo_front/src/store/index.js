@@ -7,21 +7,26 @@ const store = createStore({
   // state is like our data
   state: {
     username: null,
+    user_id: null,
     accessToken: null,
     refreshToken: null,
     sjwt_url: "http://127.0.0.1:8000/api/token/",
+    sjwt_register_url: "http://localhost:8000/register/",
     sjwt_refresh_url: "http://127.0.0.1:8000/api/token/refresh/",
     sjwt_verify_url: 'http://127.0.0.1:8000/api/token/verify/',
   },
   // mutations are like our sync methods
   mutations: {
-    updateStorage(state, { username, access, refresh}) {
-      state.username = username
+    updateStorage(state, { username, user_id, access, refresh}) {
+      state.username = username;
+      state.user_id = user_id;
       state.accessToken = access;
       state.refreshToken = refresh;
       console.log(`
       original username: ${username}
       username : ${state.username},
+      original id: ${user_id},
+      id: ${state.user_id},
       original access token: ${access},
       access token: ${state.accessToken},
       original refresh token: ${refresh},
@@ -63,9 +68,9 @@ const store = createStore({
             password: usercredentials.password,
           })
           .then((response) => {
-            console.log(response.data.id)
             context.commit("updateStorage", {
-              username: usercredentials.username,
+              username: response.data.user,
+              user_id: response.data.id,
               access: response.data.access,
               refresh: response.data.refresh,
             });
@@ -75,6 +80,27 @@ const store = createStore({
             reject(err);
           });
       });
+    },
+    userRegister(context, usercredentials){
+      return new Promise((resolve, reject) =>{
+        axios.post(store.state.sjwt_register_url, {
+            username: usercredentials.username,
+            password: usercredentials.password,
+          })
+          .then((response) => {
+            context.commit("updateStorage", {
+              username: response.data.username,
+              user_id: response.data.id,
+              access: response.data.access,
+              refresh: response.data.refresh,
+            });
+            resolve();
+          })
+          .catch((err) => {
+            reject(err)
+          });
+      })
+
     },
     updateAccessToken(context, {refreshToken}){
       return new Promise((resolve, reject) =>{
@@ -100,18 +126,19 @@ const store = createStore({
       let access = Cookies.get('accessToken')
       let refresh = Cookies.get('refreshToken')
       let username = Cookies.get('username')
+      let user_id = Cookies.get('user_id')
 
       // We are going to post our access token to a verify url
       axios.post(context.state.sjwt_verify_url, {token:access}).then(()=>{
         // If status is 200 then we are just going commit our update storage mutations with the initial values
-        context.commit('updateStorage', {username, access, refresh})
+        context.commit('updateStorage', {username, user_id, access, refresh})
         resolve()
       }).catch(()=>{
 
         // if we were to get the error that means the token has expired so lets use our refresh token to obtain a new one
         context.dispatch('updateAccessToken', {refreshToken:refresh}).then(()=>{
           // Once the dispatch is completed then we have an updated accessToken cookie in which we set for access
-          context.commit('updateStorage', {username, access: Cookies.get('accessToken') , refresh})
+          context.commit('updateStorage', {username, user_id, access: Cookies.get('accessToken') , refresh})
           resolve()
         })
       })

@@ -62,7 +62,7 @@
         <div class="navbar-item">
           <div class="buttons" v-if="!isLoggedIn">
             <a class="button is-primary">
-              <strong>Sign up</strong>
+              <router-link :to="{ name: 'Register' }"> Sign Up </router-link>
             </a>
             <a class="button is-light">
               <router-link :to="{ name: 'Login' }"> Login </router-link>
