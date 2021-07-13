@@ -8,9 +8,11 @@ Steps:
 -- DONE Django - Create RESTAPI and explore APIVIEW
 -- DONE Postman - Test API call
 -- DONE Django - Add Cors for Vue to grab the api call
--- Vue - Call that api using axios and make a front page
+-- DONE Vue - Call that api using axios and make a front page
 -- CANCELED Vue - Introduce Bootstrap Vue NOTE: Bootstrap-Vue doesn't support Vue3
 -- DONE NEW Vue - Introduce Bulma ;)
--- Users can Edit, Move to finish tasks, Delete, View and Post todos
--- Vue & Django routers
+-- DONE Users can Edit, Move to finish tasks, Delete, View and Post todos
+-- DONE Vue - Edit tasks, Delete, View and Post todos
+-- DONE 1/2 Django and Vue Authentication? JWT? todos specific for each users
+-- DONE  Vue & Django routers
 -- Deploy - Checkout DigitalOcean, Since we are using Vue as our main go we could Netlify

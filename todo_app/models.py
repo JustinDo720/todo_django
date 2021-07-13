@@ -37,6 +37,7 @@ class Todo(models.Model):
     task = models.CharField(max_length=600)
     task_completed = models.BooleanField(default=False)
     date_added = models.DateField(auto_now_add=True)
+    order_date_added = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return self.task

@@ -18,6 +18,10 @@ from django.urls import path, include
 from django.conf.urls.static import static
 from todo import settings
 
+# SJWT
+from rest_framework_simplejwt.views import TokenRefreshView, TokenVerifyView
+from todo_app.views import MyTokenObtainPairView
+
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('todo_app.urls')),
@@ -25,6 +29,11 @@ urlpatterns = [
     path('', include('django.contrib.auth.urls')),
     path('api/v1/auth/', include('djoser.urls')),
     path('api/v1/auth/', include('djoser.urls.jwt')),
+    # We are going to use this path to grab another token using a refresh token in case the user refreshes the page
+    path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh_view'),
+    path('api/token/verify/', TokenVerifyView.as_view(), name='verify_token'),
+    # Custom token claim for user id and user information
+    path('api/token/', MyTokenObtainPairView.as_view(), name='token_obtain_pair'),
 ]
 
 if settings.DEBUG:

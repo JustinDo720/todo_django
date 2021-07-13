@@ -23,11 +23,23 @@
       </a>
     </div>
 
-    <div id="navbarBasicExample" class="navbar-menu" v-bind:class="{'is-active': showMobileMenu}">
+    <div
+      id="navbarBasicExample"
+      class="navbar-menu"
+      v-bind:class="{ 'is-active': showMobileMenu }"
+    >
       <div class="navbar-start">
-        <a class="navbar-item"> <router-link to="/" class="navbar-item">Home</router-link> </a>
+        <a class="navbar-item">
+          <router-link :to="{ name: 'Home' }" class="navbar-item"
+            >Home</router-link
+          >
+        </a>
 
-        <a class="navbar-item"> <router-link to="/view_todos/" class="navbar-item">View Todos</router-link> </a>
+        <a class="navbar-item">
+          <router-link :to="{ name: 'ViewTodo' }" class="navbar-item"
+            >View Todos</router-link
+          >
+        </a>
 
         <div class="navbar-item has-dropdown is-hoverable">
           <a class="navbar-link"> More </a>
@@ -48,11 +60,19 @@
 
       <div class="navbar-end">
         <div class="navbar-item">
-          <div class="buttons">
+          <div class="buttons" v-if="!isLoggedIn">
             <a class="button is-primary">
-              <strong>Sign up</strong>
+              <router-link :to="{ name: 'Register' }"> Sign Up </router-link>
             </a>
-            <a class="button is-light"> Log in </a>
+            <a class="button is-light">
+              <router-link :to="{ name: 'Login' }"> Login </router-link>
+            </a>
+          </div>
+           <div class="buttons" v-else>
+            <strong>Welcome {{ userName }}!</strong>
+            <a class="button is-light">
+              <router-link :to="{ name: 'Logout' }"> Logout </router-link>
+            </a>
           </div>
         </div>
       </div>
@@ -60,6 +80,7 @@
   </nav>
 </template>
 <script>
+
 export default {
   data() {
     return {
@@ -67,5 +88,14 @@ export default {
       showMobileMenu: false,
     };
   },
+  computed:{
+    isLoggedIn(){
+      return this.$store.getters.loggedIn
+    },
+    userName(){
+      return this.$store.state.username
+    }
+  }
+
 };
 </script>

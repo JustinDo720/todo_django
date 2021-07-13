@@ -4,5 +4,7 @@ from . import views
 urlpatterns = [
     path('api/', include('rest_framework.urls')),
     path('', views.index, name='index'),
-    path('show_todos/', views.ShowTodos.as_view(), name='show_todos'),
+    path('todos/', views.Todos.as_view(), name='todos'),
+    path('specific_todo/<int:todo_id>', views.SpecificTodo.as_view(), name='remove_task'),
+    path('register/', views.RegisterAPI.as_view(), name='register')
 ]

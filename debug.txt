@@ -1,0 +1,44 @@
+1) Problem Topic: SJWT access token and Vuex (Updating states)
+
+Problem Explained: Our access token were not refreshed each time therefore we were getting 401 errors on ViewTodo.
+    After trying to reinitialize, our access tokens were still not correct in vuex state. When we tried to check and
+    verify our access token, we had the response and our new token but the state were still populated with invalid token
+    which caused our program to stop working. After that, we had some router issues where isLoggedIn cookies were not
+    working with our isLoggedIn getters which caused the router to constantly pull up a required log in.
+
+Solution Explained: The main solution was reinitializing our store!! Since our program used vuex and people tend to
+    refresh the page, our states were also refreshed meaning they returned back to their initial data. To fix this, we
+    made an action that is dispatched when the ViewTodos component is created. This action uses cookies to retain the
+    data and commits a mutation called updateStorage in order to update our states to the values stored as cookies from
+    prior sessions. Here is where I noticed the access token value was either expired or invalid. To fix this, we posted
+    the access token to a verify token endpoint in SJWT which allowed us to return a 200 or 401. If it returned a 200,
+    then the token is still valid meaning we could just update our storage with the initial values (aka Cookie values).
+    If it returned a 401, that means the token is no longer active meaning that we must use the refresh token provided
+    by TokenObtainPairView to grab a new access token. Once we grab this new access token, by dispatching updateAccessToken
+    , we went ahead and override our current accessToken cookie (which was done in the mutation updateAccessToken).
+    With this newly updated cookie, we committed updateStorage but this time with access set to that new cookie.
+
+Additional Notes: We need to be careful with the flow. It's not like python, I remember using the var access even prior
+    to setting it after a function I initially called using that var. Be careful after committing or dispatching actions.
+    When we tried to set the cookie in our action updateAccessToken, it was still using the invalid accessToken cookie.
+    But if we put it in our mutation updateAccessToken, it works. Another thing to pay attention to is passing payload.
+    Often times, I make this same mistake where I don't use {} and instead I pass in the values straight on. For instance,
+    context.commit('updateAccessToken', {newAccessToken:response.data.access}) I would put context.commit('updateAccessToken', response.data.access).
+    This is problematic because it would not know which data to set that value for causing some nulls to be return.
+    Also, make sure the name of the var is the same as the parameters set for mutations.
+
+2) Problem Topic: Login guard failure
+
+Problem explained: Each time we login and refresh the page, the user still has to log back in. Although the user could
+    just click View Todos link to bypass the login prompt, it's inconvenient. Before the change, we used cookies to
+    authenticate logins which is not a good solution because someone could easily inject a cookie if they knew the key.
+
+Solution Explained: I noticed that there were issues with reinitializeStorage where the router is built and then
+    reinitializeStorage is dispatched. So the solution was to dispatch reinitializeStorage and then build out our guard.
+    This way our loggedIn getters will have a correct value. If LoggedIn getters has the correct value, then our guard
+    will work and make a fluid experience when a user refreshes the page. This also means our navbar welcome message
+    is also fixed.
+
+Additional Notes: Router is built before main which is why we needed to dispatch our reinitializeStorage  in router.
+    This will fix our issue with the login prompt by updating the getters to the correct value which is dependent on
+    accessToken not being null in our storage.

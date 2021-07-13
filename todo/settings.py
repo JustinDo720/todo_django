@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'djoser',
     'rest_framework',
     'corsheaders',
+    'rest_framework_simplejwt.token_blacklist',
 
 
     'django.contrib.admin',
@@ -153,16 +154,15 @@ if DEBUG:
     )
 
 # REST Framework configuration
-# REST_FRAMEWORK = {
-#     'DEFAULT_PERMISSION_CLASSES': [
-#         'rest_framework.permissions.IsAuthenticated'
-#     ],
-#     'DEFAULT_AUTHENTICATION_CLASSES' : (
-#         'rest_framework_simplejwt.authentication.JWTAuthentication',
-#         'rest_framework.authentication.SessionAuthentication',
-#     ),
-#     'DEFAULT_RENDERER_CLASSES':DEFAULT_RENDERER_CLASSES
-# }
+REST_FRAMEWORK = {
+    # 'DEFAULT_PERMISSION_CLASSES': [
+    #     'rest_framework.permissions.IsAuthenticated'
+    # ],
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    ),
+    'DEFAULT_RENDERER_CLASSES': DEFAULT_RENDERER_CLASSES
+}
 
 # DJOSER AND SIMPLE_JWT
 
@@ -176,10 +176,21 @@ if DEBUG:
 #     'PASSWORD_RESET_CONFIRM_URL': 'auth/password/reset/{uid}/{token}',
 # }
 #
-# SIMPLE_JWT = {
-#     'JWT_ALLOW_REFRESH': True,
-#     'JWT_EXPIRATION_DELTA': timedelta(minutes=2),
-#     'JWT_REFRESH_EXPIRATION_DELTA': timedelta(days=7),
-# }
+SIMPLE_JWT = {
+    'JWT_ALLOW_REFRESH': True,
+    'ACCESS_TOKEN_LIFETIME': timedelta(days=7),
+    'USER_ID_FIELD': 'id',
+    'USER_ID_CLAIM': 'user_id',
+    'USER_AUTHENTICATION_RULE': 'rest_framework_simplejwt.authentication.default_user_authentication_rule',
+
+}
 
 CORS_ORIGIN_ALLOW_ALL = True
+
+CORS_ORIGIN_WHITELIST = (
+    # Cors should not have path meaning no trailing /
+    'http://localhost:8080',
+    'http://127.0.0.1:8000',
+    'http://localhost:8081',
+    'http://127.0.0.1:8001',
+)
