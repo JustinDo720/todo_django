@@ -21,15 +21,16 @@ def index(request):
 
 
 # We are going to make API views that allows reading full todos and handle posting
-class Todos(APIView):
+class AllTodos(APIView):
     """
-    View all of the todos in our system and handle post request
+    View all of the todos in our system and handle post requests
 
     Permission-wise we don't need to be admin to view something like this so we don't need:
         authentication_classes = [authentication.TokenAuthentication]
         permission_classes = [permissions.IsAdminUser]
     """
 
+    # We need permission_classes because we no longer have the default permissions set in settings
     permission_classes = (IsAuthenticated,)
 
     # Something to note: APIView always has some common methods like get or post etc
@@ -56,19 +57,6 @@ class Todos(APIView):
         # If the serializer is not valid then we got a bad request and we have to handle it using status
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-
-# # Lets take a look at function based views
-# @api_view(['GET', 'DELETE'])
-# def remove_task(request, todo_id):
-#     # Grabbing specific todo item
-#     todo = Todo.objects.get(id=todo_id)
-#     serializer = TodoSerializer(todo)
-#
-#     # We are going to remove it straight from the db that way it will update when Vue request
-#     if request.method == 'DELETE':
-#         todo.delete()
-#
-#     return Response(serializer.data)
 
 # Show Specific Todo
 class SpecificTodo(APIView):
@@ -121,6 +109,22 @@ class SpecificTodo(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
+# Todos will take care of showing the users their individual tasks based on their user_id
+class Todos(APIView):
+
+    def get(self, request, user_id, *args, **kwargs):
+        """
+        Returns the list of todos
+        """
+        # Lets make our main query set so
+        queryset = Todo.objects.filter(task_owner=user_id).order_by('-order_date_added')
+        # Time to Serialize which is the main idea here just serialize our data for front end to retrieve
+        # Note many=True because we dont have an exact todo in terms of id or pk
+        serializer = TodoSerializer(queryset, many=True)
+        return Response(serializer.data)
+
+
+# We are going to use this API for registering our users
 class RegisterAPI(generics.GenericAPIView):
     """
         We are going to user RegisterAPI to allow users to register on our vue front end. We are going to be sending

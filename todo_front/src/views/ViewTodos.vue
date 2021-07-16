@@ -87,9 +87,9 @@ export default {
     return {
       tasks: [],
       completed_tasks: [],
-      api_url: "http://127.0.0.1:8000/todos/",
-      showTodosAPI : 'http://127.0.0.1:8000/todos/',
-      updateTodosAPI :'http://127.0.0.1:8000/specific_todo/',
+      root_api_url: "http://127.0.0.1:8000/all_todos/", // handles posting new tasks
+      showTodosAPI : 'http://127.0.0.1:8000/todos/', // handles showing individual's tasks based on their user_id
+      updateTodosAPI :'http://127.0.0.1:8000/specific_todo/', // handles our deletes, puts and getting specific tasks
       activate_modal: false,
       // We must set default values or there will be an error about null values
       task_object : {'task_id': null, 'task_info': ''},
@@ -97,12 +97,12 @@ export default {
     };
   },
   computed:{
-    ...mapState(['accessToken'])
+    ...mapState(['accessToken', 'user_id'])
   },
   methods: {
     callAPI() {
       axios
-        .get(this.api_url, {
+        .get(this.showTodosAPI + this.user_id, {
           headers: { Authorization: `Bearer ${this.accessToken}` },
         })
         .then((response) => {
@@ -144,11 +144,16 @@ export default {
             this.tasks.splice(task_id, 1)
       }
     },
-    addTask: function(){
-      // We want to post our new task to the api url which accepts the post request
-      // axios.post(this.api_url, {task:this.newTask, task_owner:1}, {headers:{Authorization: `Bearer ${this.accessToken}`}})
-      // this.tasks.push(this.newTask)
-      console.log(this.newTask)
+    async addTask(){
+      //We want to post our new task to the api url which accepts the post request
+      axios.post(this.root_api_url,
+          {task:this.newTask, task_owner:this.user_id},
+         {headers:{Authorization: `Bearer ${this.accessToken}`}}).then((response)=>{
+           // Once we finish posting we need to refresh our items with the correct id so
+           this.tasks.unshift(response.data)
+           this.newTask = null
+      })
+
 
     }
   },

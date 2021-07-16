@@ -1,6 +1,7 @@
 import { createStore } from "vuex";
 import axios from "axios";
 import Cookies from 'cookies-js';
+import router from "../router";
 
 // Create a new store instance.
 const store = createStore({
@@ -38,6 +39,10 @@ const store = createStore({
       Cookies.expire('accessToken')
       state.refreshToken = null;
       Cookies.expire('refreshToken')
+      state.user_id = null;
+      Cookies.expire('user_id')
+      state.username = null;
+      Cookies.expire('username')
     },
     updateAccessToken(state, {newAccessToken}){
       state.accessToken = newAccessToken
@@ -135,12 +140,17 @@ const store = createStore({
         resolve()
       }).catch(()=>{
 
-        // if we were to get the error that means the token has expired so lets use our refresh token to obtain a new one
-        context.dispatch('updateAccessToken', {refreshToken:refresh}).then(()=>{
-          // Once the dispatch is completed then we have an updated accessToken cookie in which we set for access
-          context.commit('updateStorage', {username, user_id, access: Cookies.get('accessToken') , refresh})
+        if(access){
+           // if we were to get the error that means the token has expired so lets use our refresh token to obtain a new one
+          context.dispatch('updateAccessToken', {refreshToken:refresh}).then(()=>{
+            // Once the dispatch is completed then we have an updated accessToken cookie in which we set for access
+            context.commit('updateStorage', {username, user_id, access: Cookies.get('accessToken') , refresh})
+            resolve()
+          })
+        }else{
+          router.push({name:'Login'})
           resolve()
-        })
+        }
       })
       })
     },
