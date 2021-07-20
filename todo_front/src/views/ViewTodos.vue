@@ -85,8 +85,6 @@ import { mapState } from 'vuex';
 export default {
   data() {
     return {
-      tasks: [],
-      completed_tasks: [],
       root_api_url: "http://127.0.0.1:8000/all_todos/", // handles posting new tasks
       showTodosAPI : 'http://127.0.0.1:8000/todos/', // handles showing individual's tasks based on their user_id
       updateTodosAPI :'http://127.0.0.1:8000/specific_todo/', // handles our deletes, puts and getting specific tasks
@@ -97,29 +95,9 @@ export default {
     };
   },
   computed:{
-    ...mapState(['accessToken', 'user_id'])
+    ...mapState(['accessToken', 'user_id', "completed_tasks", "tasks"])
   },
   methods: {
-    callAPI() {
-      axios
-        .get(this.showTodosAPI + this.user_id, {
-          headers: { Authorization: `Bearer ${this.accessToken}` },
-        })
-        .then((response) => {
-          for (let task_id in response.data) {
-            let task = response.data[task_id];
-            if (task["task_completed"]) {
-              this.completed_tasks.push(task);
-            } else {
-              this.tasks.push(task);
-            }
-          }
-        }).catch(() =>{
-          // If there is an error then that must mean the token is invalid so we need to get another token
-
-
-      });
-    },
     updateTask: function(task_id, status) {
       let targeted_task = this.tasks[task_id]
       let api_url = this.updateTodosAPI + targeted_task.id
@@ -140,7 +118,7 @@ export default {
             this.completed_tasks.unshift(targeted_task)
             this.tasks.splice(task_id, 1)
       }else if(status === 'delete'){
-            axios.delete(api_url)
+            axios.delete(api_url, {headers:{ Authorization: `Bearer ${this.accessToken}`}})
             this.tasks.splice(task_id, 1)
       }
     },
@@ -159,7 +137,11 @@ export default {
   },
   beforeCreate(){
     store.dispatch('reinitializeStore').then(()=>{
-      this.callAPI()
+      store.dispatch('callAPI',{
+        showTodosAPI: this.showTodosAPI,
+        user_id: this.user_id,
+        accessToken: this.accessToken
+      })
     })
   }
 };

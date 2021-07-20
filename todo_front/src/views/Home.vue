@@ -20,9 +20,13 @@
         <div class="columns mt-5">
           <div class="tile is-parent column is-offset-1 is-three-fifths" v-if="loggedIn">
           <article class="tile is-child notification is-success">
-          <div class="content">
-            <p class="title">Tall tile</p>
-            <p class="subtitle">With even more content</p>
+          <div class="content quickAdd">
+            <p class="title">Quick Add Todo</p>
+            <input class="input is-info is-medium is-rounded" type="text" placeholder="Add Your Task Here">
+            <div class="buttons is-centered">
+              <button class="button is-info is-outlined mt-5 is-rounded">Add Todo</button>
+            </div>
+
           <div class="content">
             <!-- Content -->
 
@@ -52,7 +56,9 @@
             </p>
 
           <div class="content">
-          <!-- Content -->
+            <div class="box" v-for="(todo, index) in tasks" :key="index">
+              {{ todo.task }}
+            </div>
           </div>
           </div>
           </article>
@@ -67,20 +73,37 @@
 
 <script>
 // @ is an alias to /src
-import { mapGetters} from 'vuex'
+import { mapGetters, mapState} from 'vuex'
+import store from "../store";
 
 export default {
   name: "Home",
   computed:{
-    ...mapGetters(['loggedIn'])
+    ...mapGetters(['loggedIn']),
+    ...mapState(['tasks', 'user_id', 'accessToken', ])
   },
   data(){
     return{
-
+      showTodosAPI : 'http://127.0.0.1:8000/todos/',
     }
   },
+  created(){
+    // This task can only be performed if the user is authenticated so
+    // We always need to reinitialize the store to obtain our old data
+    store.dispatch('reinitializeStore').then(()=>{
+      store.dispatch('callAPI',{
+        showTodosAPI: this.showTodosAPI,
+        user_id: this.user_id,
+        accessToken: this.accessToken
+      })
+    })
+
+  }
 };
 </script>
 
 <style scoped>
+.quickAdd{
+  max-height:500px;
+}
 </style>

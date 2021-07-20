@@ -1,20 +1,29 @@
 import { createStore } from "vuex";
 import axios from "axios";
 import Cookies from 'cookies-js';
-import router from "../router";
+// import router from "../router";
 
 // Create a new store instance.
 const store = createStore({
   // state is like our data
   state: {
+    // our storages
     username: null,
     user_id: null,
     accessToken: null,
     refreshToken: null,
+
+    // Urls that deal with sjwt
     sjwt_url: "http://127.0.0.1:8000/api/token/",
     sjwt_register_url: "http://localhost:8000/register/",
     sjwt_refresh_url: "http://127.0.0.1:8000/api/token/refresh/",
     sjwt_verify_url: 'http://127.0.0.1:8000/api/token/verify/',
+
+    // Tasks
+    all_tasks: [],
+    completed_tasks: [],
+    tasks: [],
+
   },
   // mutations are like our sync methods
   mutations: {
@@ -49,6 +58,12 @@ const store = createStore({
       // if we set a cookie then it overrides the current "possible" cookie giving us an up-to-date accessToken
       Cookies.set('accessToken', newAccessToken)
       console.log('Our new state access token: ' + state.accessToken)
+    },
+    saveAPIResponse(state, {all_tasks, completed_tasks, tasks}){
+      state.all_tasks = all_tasks
+      state.completed_tasks = completed_tasks
+      state.tasks = tasks
+      console.log(all_tasks, completed_tasks, tasks)
     }
   },
   // getters are like our computed properties
@@ -87,6 +102,7 @@ const store = createStore({
           });
       });
     },
+
     userRegister(context, usercredentials){
       return new Promise((resolve, reject) =>{
         axios.post(store.state.sjwt_register_url, {
@@ -140,7 +156,6 @@ const store = createStore({
         context.commit('updateStorage', {username, user_id, access, refresh})
         resolve()
       }).catch(()=>{
-
         if(access){
            // if we were to get the error that means the token has expired so lets use our refresh token to obtain a new one
           context.dispatch('updateAccessToken', {refreshToken:refresh}).then(()=>{
@@ -149,12 +164,41 @@ const store = createStore({
             resolve()
           })
         }else{
-          router.push({name:'Login'})
+          // We cannot force push to Login because if we do our homepage router will be glitched with login requests
+          // router.push({name:'Login'})
           resolve()
         }
       })
       })
     },
+    // We are going to use callAPI to grab the tasks in our api
+    callAPI(context, {showTodosAPI, user_id, accessToken}){
+       let completed_tasks = []
+       let tasks = []
+
+       axios
+        .get(showTodosAPI + user_id, {
+          headers: { Authorization: `Bearer ${accessToken}` },
+        })
+        .then((response) => {
+          for (let task_id in response.data) {
+            let task = response.data[task_id];
+            if (task["task_completed"]) {
+              completed_tasks.push(task);
+            } else {
+              tasks.push(task);
+            }
+          }
+          // After we fully pushed all of our tasks into their correct category based on status we need update storage
+          context.commit('saveAPIResponse',{
+            all_tasks: tasks + completed_tasks,
+            completed_tasks: completed_tasks,
+            tasks: tasks,
+          })
+
+        })
+    },
+
   },
 });
 
