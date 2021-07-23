@@ -54,20 +54,24 @@ const router = createRouter({
 
 store.dispatch('reinitializeStore').then(()=>{
       // router guards
-router.beforeEach((to, from, next) =>{
-  console.log('router log in info after: ' + !store.getters.loggedIn)
-  if(to.matched.some(record => record.meta.requiresLogin)){
-    if(!store.getters.loggedIn){
-      next({name:'Login'})
-    }else{
-      next()
-    }
-  }else{
-    // This means that the router doesnt have the meta tag 'requiresLogin' which means they are free to pass
-    next()
-  }
+      router.beforeEach((to, from, next) =>{
+        console.log('router log in info after: ' + !store.getters.loggedIn)
+        if(to.matched.some(record => record.meta.requiresLogin)){
+          if(!store.getters.loggedIn){
+            next({name:'Login'})
+          }else{
+            next()
+          }
+        }else{
+          // This means that the router doesnt have the meta tag 'requiresLogin' which means they are free to pass
+          next()
+        }
+      })
+    }).catch(()=>{
+      console.log(
+          'There is an error here'
+      )
 })
-    })
 
 
 

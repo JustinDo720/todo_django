@@ -50,6 +50,8 @@
 
 <script>
 
+import Cookies from "cookies-js";
+
 export default {
   name: "register",
   data() {
@@ -68,12 +70,18 @@ export default {
               password: this.password,
             })
             .then(() => {
+              console.log('After we register we want to log in so')
               // If this is successful then we are going to log them in
               this.$store.dispatch("userLogin",{
                 username: this.username,
                 password: this.password,
               }).then(()=>{
-               this.$router.push({name:'Home'})
+                // We need to set our cookies if we dont set our cookies the user cannot go to viewtodos
+                Cookies.set('accessToken', this.$store.state.accessToken)
+                Cookies.set('refreshToken', this.$store.state.refreshToken)
+                Cookies.set('username', this.username)
+                Cookies.set('user_id', this.$store.state.user_id)
+                this.$router.push({name:'Home'})
               })
 
             })
